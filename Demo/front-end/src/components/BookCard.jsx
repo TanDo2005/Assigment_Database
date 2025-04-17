@@ -6,18 +6,19 @@ function ProductCard({ product }) {
   const { deleteProduct } = useBookStore();
   return (
     <div className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+      <Link to={`/product/${product.id}`}>
       {/* PRODUCT IMAGE */}
       <figure className="relative pt-[56.25%]">
         <img
           src={product.image}
-          alt={product.name}
+          alt={product.title}
           className="absolute top-0 left-0 w-full h-full object-cover"
         />
       </figure>
 
       <div className="card-body">
         {/* PRODUCT INFO */}
-        <h2 className="card-title text-lg font-semibold">{product.name}</h2>
+        <h2 className="card-title text-lg font-semibold">{product.title}</h2>
         <p className="text-2xl font-bold text-primary">${Number(product.price).toFixed(2)}</p>
 
         {/* CARD ACTIONS */}
@@ -34,6 +35,7 @@ function ProductCard({ product }) {
           </button>
         </div>
       </div>
+      </Link>
     </div>
   );
 }
