@@ -51,7 +51,7 @@ function AddProductModal() {
                   step="0.01"
                   placeholder="0.00"
                   className="input input-bordered w-full pl-10 py-3 focus:input-primary transition-colors duration-200"
-                  value={formData.price}
+                  value={formData.price}inlcu
                   onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                 />
               </div>

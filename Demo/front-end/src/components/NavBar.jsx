@@ -1,13 +1,25 @@
 import { Link, useResolvedPath } from "react-router-dom";
-import { ShoppingBagIcon, ShoppingCartIcon } from "lucide-react";
+import { ShoppingBagIcon, ShoppingCartIcon, Search } from "lucide-react";
 import ThemeSelector from "./ThemeSelector";
 import { useBookStore } from "../store/useBookStore";
+import SearchBar from "./SearchBar";
+import SearchButton from "./SearchButton";
+import { useEffect, useState } from "react";
 
 function Navbar() {
   const { pathname } = useResolvedPath();
   const isHomePage = pathname === "/";
+  const [value, setValue] = useState("");
 
-  const { books } = useBookStore();
+  const { books, fetchBooks } = useBookStore();
+
+  const handlechange = (val) => {
+    setValue(val);
+  }
+
+  useEffect(() => {
+    fetchBooks();
+  }, [fetchBooks]);
 
   return (
     <div className="bg-base-100/80 backdrop-blur-lg border-b border-base-content/10 sticky top-0 z-50">
@@ -26,6 +38,19 @@ function Navbar() {
                 </span>
               </div>
             </Link>
+          </div>
+
+          {/* SEARCH BAR */}
+          <div className="relative hidden lg:flex flex-1 max-w-[600px]"  >
+            <SearchBar
+              selectedVal = {value}
+              handleChange = {handlechange}
+
+              options = {books}
+              title = "title"
+              id = "id"
+            />
+            <SearchButton query = {value}/>
           </div>
 
           {/* RIGHT SECTION */}

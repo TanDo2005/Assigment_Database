@@ -2,7 +2,7 @@ import { EditIcon, Trash2Icon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useBookStore } from "../store/useBookStore";
 
-function ProductCard({ product }) {
+function BookCard({ product }) {
   const { deleteProduct } = useBookStore();
   return (
     <div className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300">
@@ -39,4 +39,4 @@ function ProductCard({ product }) {
     </div>
   );
 }
-export default ProductCard;
+export default BookCard;
