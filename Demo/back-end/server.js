@@ -6,6 +6,17 @@ import dotenv from "dotenv";
 
 import productRoutes from "./routes/productRoutes.js";
 import authorRoutes from "./routes/authorsRoutes.js";
+
+//của Minh
+import genresRoutes from "./routes/genresRoutes.js";
+import shoppingCartRoutes from "./routes/shoppingcartRoutes.js";
+import userRoutes from "./routes/usersRoutes.js";
+import orderRoutes from "./routes/ordersRoutes.js";
+import orderDetailRoutes from "./routes/orderdetailRoutes.js";
+import shipmentRoutes from "./routes/shipmentRoutes.js";
+import discountRoutes from "./routes/discountsRoutes.js";
+import loginRoutes from "./routes/loginRoutes.js";
+
 import {sql} from "./config/db.js";
 
 // import {aj} from "./lib/arcjet.js";
@@ -54,6 +65,17 @@ app.use(morgan("dev"));
 
 app.use("/api/products", productRoutes);
 app.use("/api/authors", authorRoutes);
+
+//của Minh
+app.use("/api/genres", genresRoutes);
+app.use("/api/shoppingcart", shoppingCartRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/orderdetail", orderDetailRoutes);
+app.use("/api/shipment", shipmentRoutes);   
+app.use("/api/discounts", discountRoutes);
+app.use("/api/login", loginRoutes);
+
 
 async function initDB() {
     try {

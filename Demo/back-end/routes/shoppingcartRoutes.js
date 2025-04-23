@@ -1,0 +1,12 @@
+// const express = require('express');
+import express from 'express';
+const router = express.Router();
+// const controller = require('../controller/shoppingcartController.js ');
+import * as controller from '../controller/shoppingcartController.js';
+router.get('/', controller.getAllCarts);
+router.get('/:userId', controller.getCartByUserId);
+router.post('/', controller.createOrUpdateCart);
+router.delete('/:userId', controller.deleteCart);
+
+// module.exports = router;
+export default router;

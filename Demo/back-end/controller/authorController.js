@@ -1,50 +1,77 @@
-import {sql} from "../config/db.js";
+import { sql } from "../config/db.js";
 
 export const getAllAuthors = async (req, res) => {
     try {
-        const authors = await sql `
+        const authors = await sql`
             SELECT * FROM Authors
             ORDER BY Authorid ASC
         `;
 
-        res.status(200).json({success: true, data: authors});
+        res.status(200).json({ success: true, data: authors });
     } catch (error) {
         console.log("Error");
     }
 };
 
 export const getAuthor = async (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
 
     try {
-        const book = await sql `
+        const book = await sql`
             SELECT * FROM Authors WHERE authorid = ${id}
         `;
 
         if (book.length === 0) {
-            return res.status(404).json({success: false, message: "Author not found!"});
+            return res.status(404).json({ success: false, message: "Author not found!" });
         }
 
-        res.status(200).json({success: true, data: book[0]});
+        res.status(200).json({ success: true, data: book[0] });
     } catch (error) {
-        return res.status(500).json({success: false, message: "Error getting author"});
+        return res.status(500).json({ success: false, message: "Error getting author" });
     }
 };
 
 export const getBookByAuthor = async (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
 
     try {
-        const book = await sql `
+        const book = await sql`
             SELECT * FROM Books WHERE authorid = ${id}
         `;
 
         if (book.length === 0) {
-            return res.status(404).json({success: false, message: "Book not found!"});
+            return res.status(404).json({ success: false, message: "Book not found!" });
         }
 
-        res.status(200).json({success: true, data: book[0]});
+        res.status(200).json({ success: true, data: book[0] });
     } catch (error) {
-        return res.status(500).json({success: false, message: "Error getting Book"});
+        return res.status(500).json({ success: false, message: "Error getting Book" });
+    }
+};
+
+export const createAuthor = async (req, res) => {
+    try {
+        const newAuthor = await Author.create(req.body);
+        res.status(201).json(newAuthor);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+export const updateAuthor = async (req, res) => {
+    try {
+        const [updated] = await Author.update(req.body, { where: { AuthorID: req.params.id } });
+        updated ? res.json({ message: 'Author updated' }) : res.status(404).json({ message: 'Author not found' });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+export const deleteAuthor = async (req, res) => {
+    try {
+        const deleted = await Author.destroy({ where: { AuthorID: req.params.id } });
+        deleted ? res.json({ message: 'Author deleted' }) : res.status(404).json({ message: 'Author not found' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 };
