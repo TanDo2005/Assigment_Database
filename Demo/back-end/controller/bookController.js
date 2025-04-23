@@ -13,6 +13,39 @@ export const getAllBooks = async (req, res) => {
     }
 };
 
+export const getYears = async (req, res) => {
+    try {
+        const years = await sql`
+            SELECT DISTINCT publishedyear FROM books 
+            ORDER BY publishedyear ASC
+        `;
+
+        res.status(200).json({success:true, data: years});
+    } catch (error) {
+        console.log("")
+    }
+};
+
+export const getBookbyYear = async (req, res) => {
+    const {y} = req.params;
+
+    try {
+        const book = await sql `
+            SELECT * FROM Books WHERE publishedyear = ${y}
+        `;
+
+        if (book.length === 0) {
+            return res.status(404).json({success: false, message: "Book not found!"});
+        }
+
+        res.status(200).json({success: true, data: book});
+    } catch (error) {
+        console.log("Error getting book", error);
+        return res.status(500).json({success: false, message: "Error getting book"});
+    }
+};
+
+
 export const getAllAuthors = async (req, res) => {
     try {
         const authors = await sql `
