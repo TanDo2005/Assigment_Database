@@ -7,14 +7,37 @@ export const getAllBooks = async (req, res) => {
             ORDER BY id ASC
         `;
 
-        console.log("Books");
         res.status(200).json({success:true, data: books});
     } catch (error) {
         console.log("")
     }
 };
 
+export const getAllAuthors = async (req, res) => {
+    try {
+        const authors = await sql `
+            SELECT * FROM Authors
+            ORDER BY authorid ASC
+        `;
 
+        res.status(200).json({success: true, data: authors});
+    } catch (error) {
+        console.log("");
+    }
+}
+
+export const getAllGenres = async (req, res) => {
+    try {
+        const genres = await sql `
+            SELECT * FROM Genres
+            ORDER BY genreid ASC
+        `;
+
+        res.status(200).json({success: true, data: genres});
+    } catch (error) {
+        console.log("");
+    }
+}
 
 export const createBook = async (req, res) => {
     const {id, title, price, stock, publishedYear, authorid, genreid} = req.body;
@@ -37,6 +60,7 @@ export const createBook = async (req, res) => {
         return res.status(500).json({success: false, message: "Error creating book" + error});
     }
 };
+
 
 export const getBook = async (req, res) => {
     const {id} = req.params;
@@ -101,3 +125,4 @@ export const deleteBook = async (req, res) => {
         return res.status(500).json({success: false, message: "Error deleting book"});
     }
 };
+

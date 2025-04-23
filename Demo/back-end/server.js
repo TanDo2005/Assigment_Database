@@ -5,6 +5,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 import productRoutes from "./routes/productRoutes.js";
+import authorRoutes from "./routes/authorsRoutes.js";
 import {sql} from "./config/db.js";
 
 // import {aj} from "./lib/arcjet.js";
@@ -52,6 +53,7 @@ app.use(morgan("dev"));
 // })
 
 app.use("/api/products", productRoutes);
+app.use("/api/authors", authorRoutes);
 
 async function initDB() {
     try {
