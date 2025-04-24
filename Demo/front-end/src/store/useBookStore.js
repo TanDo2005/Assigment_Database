@@ -12,6 +12,7 @@ export const useBookStore = create((set, get) => ({
   books: [],
   authors: [],
   genres: [],
+  years: [],
   loading: false,
   error: null,
   currentBook: null,
@@ -83,6 +84,19 @@ export const useBookStore = create((set, get) => ({
     } catch (err) {
       if (err.status == 429) set({ error: "Rate limit exceeded", genres: [] });
       else set({ error: "Something went wrong", genres: [] });
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  fetchYears: async () => {
+    set({ loading: true });
+    try {
+      const response = await axios.get(`${BASE_URL}/api/products/years`);
+      set({ years: response.data.data, error: null });
+    } catch (err) {
+      if (err.status == 429) set({ error: "Rate limit exceeded", years: [] });
+      else set({ error: "Something went wrong", years: [] });
     } finally {
       set({ loading: false });
     }

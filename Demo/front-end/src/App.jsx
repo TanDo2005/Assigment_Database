@@ -18,6 +18,8 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/api/products/:id" element={<BookPage />} />
+        <Route path="/api/authors/:id" element={<BookPage />} />
+        <Route path="/api/genres/:id" element={<BookPage />} />
       </Routes>
 
       <Toaster />

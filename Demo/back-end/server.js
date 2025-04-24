@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 
 import productRoutes from "./routes/productRoutes.js";
 import authorRoutes from "./routes/authorsRoutes.js";
+import genresRoutes from "./routes/genresRoutes.js";
 import {sql} from "./config/db.js";
 
 // import {aj} from "./lib/arcjet.js";
@@ -54,6 +55,7 @@ app.use(morgan("dev"));
 
 app.use("/api/products", productRoutes);
 app.use("/api/authors", authorRoutes);
+app.use("/api/genres", genresRoutes);
 
 async function initDB() {
     try {

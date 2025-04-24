@@ -17,33 +17,33 @@ export const getAuthor = async (req, res) => {
     const {id} = req.params;
 
     try {
-        const book = await sql `
+        const author = await sql `
             SELECT * FROM Authors WHERE authorid = ${id}
         `;
 
-        if (book.length === 0) {
+        if (author.length === 0) {
             return res.status(404).json({success: false, message: "Author not found!"});
         }
 
-        res.status(200).json({success: true, data: book[0]});
+        res.status(200).json({success: true, data: author[0]});
     } catch (error) {
         return res.status(500).json({success: false, message: "Error getting author"});
     }
 };
 
-export const getBookByAuthor = async (req, res) => {
+export const getBooksByAuthor = async (req, res) => {
     const {id} = req.params;
 
     try {
-        const book = await sql `
+        const books = await sql `
             SELECT * FROM Books WHERE authorid = ${id}
         `;
 
-        if (book.length === 0) {
+        if (books.length === 0) {
             return res.status(404).json({success: false, message: "Book not found!"});
         }
 
-        res.status(200).json({success: true, data: book[0]});
+        res.status(200).json({success: true, data: books});
     } catch (error) {
         return res.status(500).json({success: false, message: "Error getting Book"});
     }
