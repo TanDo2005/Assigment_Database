@@ -1,18 +1,30 @@
 // const db = require('../models');
 import * as db from '../models/index.js';
 const OrderDetail = db.OrderDetail;
+import { sql } from '../config/db.js';
 
 export const getAllOrderDetails = async (req, res) => {
+  // try {
+  //   const details = await OrderDetail.findAll();
+  //   res.json(details);
+  // } catch (err) {
+  //   res.status(500).json({ error: err.message });
+  // }
   try {
-    const details = await OrderDetail.findAll();
-    res.json(details);
+    const details = await sql`
+      SELECT * FROM OrderDetails
+      ORDER BY OrderID ASC
+    `;
+    res.status(200).json({ success: true, data: details });
   } catch (err) {
+    console.log('Error fetching order details:', err);
     res.status(500).json({ error: err.message });
   }
 };
 
 export const getOrderDetail = async (req, res) => {
   const { orderId, bookId, userId } = req.params;
+  
   try {
     const detail = await OrderDetail.findOne({
       where: { OrderID: orderId, BookID: bookId, UserID: userId }

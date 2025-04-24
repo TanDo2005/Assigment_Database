@@ -50,6 +50,11 @@ export const getBookByAuthor = async (req, res) => {
 };
 
 export const createAuthor = async (req, res) => {
+    const { name, nationality } = req.body;
+    if(!name || !nationality){
+        return res.status(400).json({ success: false, message: "Please provide all required fields" });
+    }
+    
     try {
         const newAuthor = await Author.create(req.body);
         res.status(201).json(newAuthor);
