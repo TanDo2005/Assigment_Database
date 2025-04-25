@@ -16,6 +16,8 @@ import orderDetailRoutes from "./routes/orderdetailRoutes.js";
 import shipmentRoutes from "./routes/shipmentRoutes.js";
 import discountRoutes from "./routes/discountsRoutes.js";
 import loginRoutes from "./routes/loginRoutes.js";
+import registerRoutes from './routes/registerRoutes.js';
+
 
 import {sql} from "./config/db.js";
 
@@ -75,7 +77,7 @@ app.use("/api/orderdetail", orderDetailRoutes);
 app.use("/api/shipment", shipmentRoutes);   
 app.use("/api/discounts", discountRoutes);
 app.use("/api/login", loginRoutes);
-
+app.use('/api/register', registerRoutes);
 
 async function initDB() {
     try {

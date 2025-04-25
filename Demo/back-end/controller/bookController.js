@@ -7,16 +7,47 @@ export const getAllBooks = async (req, res) => {
             ORDER BY id ASC
         `;
 
-        res.status(200).json({ success: true, data: books });
+        res.status(200).json({success:true, data: books});
     } catch (error) {
         console.log("")
         return res.status(500).json({ success: false, message: "Error getting books" });
     }
 };
 
-export const getAuthorsByBookId = async (req, res) => {
-    const { id } = req.params;
+export const getYears = async (req, res) => {
+    try {
+        const years = await sql`
+            SELECT DISTINCT publishedyear FROM books 
+            ORDER BY publishedyear ASC
+        `;
 
+        res.status(200).json({success:true, data: years});
+    } catch (error) {
+        console.log("")
+    }
+};
+
+export const getBookbyYear = async (req, res) => {
+    const {y} = req.params;
+
+    try {
+        const book = await sql `
+            SELECT * FROM Books WHERE publishedyear = ${y}
+        `;
+
+        if (book.length === 0) {
+            return res.status(404).json({success: false, message: "Book not found!"});
+        }
+
+        res.status(200).json({success: true, data: book});
+    } catch (error) {
+        console.log("Error getting book", error);
+        return res.status(500).json({success: false, message: "Error getting book"});
+    }
+};
+
+
+export const getAllAuthors = async (req, res) => {
     try {
         const authors = await sql`
             SELECT * FROM Authors WHERE authorid = ${id}
@@ -203,3 +234,24 @@ export const deleteBook = async (req, res) => {
     }
 };
 
+export const getAuthorsByBookId = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const authors = await sql`
+            SELECT a.*
+            FROM Authors a
+            JOIN Books b ON a.authorid = b.authorid
+            WHERE b.id = ${id}
+        `;
+
+        if (authors.length === 0) {
+            return res.status(404).json({ success: false, message: "No authors found for this book" });
+        }
+
+        res.status(200).json({ success: true, data: authors });
+    } catch (error) {
+        console.log("Error fetching authors:", error);
+        return res.status(500).json({ success: false, message: "Error fetching authors" });
+    }
+}

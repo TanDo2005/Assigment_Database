@@ -29,7 +29,7 @@ const sequelize = new Sequelize(PGDATABASE, PGUSER, PGPASSWORD, {
       rejectUnauthorized: false, // This is important for Neon
     },
   },
-  logging: true,
+  logging: false,
 });
 
 const db = {};

@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get("/", Controller.getAllAuthors);
 router.get("/:id", Controller.getAuthor);
-router.get("/:id/books", Controller.getBookByAuthor);
+router.get("/:id/books", Controller.getBooksByAuthor);
 
 
 
