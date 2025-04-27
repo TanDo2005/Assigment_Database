@@ -5,25 +5,25 @@ import { ArrowLeftIcon, SaveIcon, Trash2Icon } from "lucide-react";
 
 function BookPage() {
   const {
-    currentProduct,
+    currentBook,
     formData,
     setFormData,
     loading,
     error,
-    fetchProduct,
-    updateProduct,
-    deleteProduct,
+    fetchBook,
+    updateBook,
+    deleteBook,
   } = useBookStore();
   const navigate = useNavigate();
   const { id } = useParams();
 
   useEffect(() => {
-    fetchProduct(id);
-  }, [fetchProduct, id]);
+    fetchBook(id);
+  }, [fetchBook, id]);
 
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this product?")) {
-      await deleteProduct(id);
+      await deleteBook(id);
       navigate("/");
     }
   };
@@ -55,8 +55,8 @@ function BookPage() {
         {/* PRODUCT IMAGE */}
         <div className="rounded-lg overflow-hidden shadow-lg bg-base-100">
           <img
-            src={currentProduct?.image}
-            alt={currentProduct?.name}
+            src={currentBook?.image}
+            alt={currentBook?.title}
             className="size-full object-cover"
           />
         </div>
@@ -69,7 +69,7 @@ function BookPage() {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                updateProduct(id);
+                updateBook(id);
               }}
               className="space-y-6"
             >
@@ -82,8 +82,8 @@ function BookPage() {
                   type="text"
                   placeholder="Enter product name"
                   className="input input-bordered w-full"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 />
               </div>
 
@@ -121,13 +121,13 @@ function BookPage() {
               <div className="flex justify-between mt-8">
                 <button type="button" onClick={handleDelete} className="btn btn-error">
                   <Trash2Icon className="size-4 mr-2" />
-                  Delete Product
+                  Delete Book
                 </button>
 
                 <button
                   type="submit"
                   className="btn btn-primary"
-                  disabled={loading || !formData.name || !formData.price || !formData.image}
+                  disabled={loading || !formData.title || !formData.price || !formData.image}
                 >
                   {loading ? (
                     <span className="loading loading-spinner loading-sm" />

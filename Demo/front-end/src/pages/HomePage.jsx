@@ -14,13 +14,13 @@ function HomePage() {
   return (
     <main className="max-w-6xl mx-auto px-4 py-8 ">
       <div className="relative justify-between items-center mb-8">
-        {/* <button
+        <button
           className="btn btn-primary"
           onClick={() => document.getElementById("add_product_modal").showModal()}
         >
           <PlusCircleIcon className="size-5 mr-2" />
           Add Book
-        </button> */}
+        </button>
         <button className="absolute top-0 right-0 btn btn-ghost btn-circle" onClick={fetchBooks}>
           <RefreshCwIcon className="size-5" />
         </button>
