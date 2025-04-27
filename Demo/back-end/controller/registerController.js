@@ -30,16 +30,16 @@ export const register = async (req, res) => {
     `;
 
     if (existingUser.length > 0) {
-      return res.status(400).json({ message: 'Username already exists' });
+      return res.status(400).json({ success: false, message: 'Username already exists' });
     }
 
     // Hash the password
-    const hashedPassword = await bcrypt.hash(Password, 10);
+    // const hashedPassword = await bcrypt.hash(Password, 10);
 
     // Insert the new user into the database
     const newUser = await sql`
       INSERT INTO "User" (username, password, dateofbirth, address, phone, email)
-      VALUES (${Username}, ${hashedPassword}, ${DateOfBirth}, ${Address}, ${Phone}, ${Email})
+      VALUES (${Username}, ${Password}, ${DateOfBirth}, ${Address}, ${Phone}, ${Email})
       RETURNING customerid, username, email, dateofbirth
     `;
 
@@ -54,6 +54,6 @@ export const register = async (req, res) => {
     });
   } catch (err) {
     console.error('Error registering user:', err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 };

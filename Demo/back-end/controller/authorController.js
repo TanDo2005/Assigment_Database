@@ -68,7 +68,7 @@ export const createAuthor = async (req, res) => {
 export const updateAuthor = async (req, res) => {
     try {
         const [updated] = await Author.update(req.body, { where: { AuthorID: req.params.id } });
-        updated ? res.json({ message: 'Author updated' }) : res.status(404).json({ message: 'Author not found' });
+        updated ? res.json({ message: 'Author updated' }) : res.status(404).json({ success: false, message: 'Author not found' });
     } catch (err) {
         console.log("Error updating author", err);
         res.status(400).json({ error: err.message });
@@ -78,7 +78,7 @@ export const updateAuthor = async (req, res) => {
 export const deleteAuthor = async (req, res) => {
     try {
         const deleted = await Author.destroy({ where: { AuthorID: req.params.id } });
-        deleted ? res.json({ message: 'Author deleted' }) : res.status(404).json({ message: 'Author not found' });
+        deleted ? res.json({ message: 'Author deleted' }) : res.status(404).json({ success: false, message: 'Author not found' });
     } catch (err) {
         console.log("Error deleting author", err);
         res.status(500).json({ error: err.message });
