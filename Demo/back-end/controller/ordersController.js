@@ -1,5 +1,6 @@
 // const db = require('../models');
 import * as db from '../models/index.js';
+import { sql } from '../config/db.js';
 const Order = db.Order;
 const User = db.User;
 
@@ -14,7 +15,7 @@ export const getAllOrders = async (req, res) => {
   // }
   try {
     const orders = await sql`
-      SELECT * FROM Orders
+      SELECT * FROM Orders 
       ORDER BY OrderID ASC
     `;
     res.status(200).json({ success: true, data: orders });
@@ -55,7 +56,22 @@ export const createOrder = async (req, res) => {
   // } catch (err) {
   //   res.status(400).json({ error: err.message });
   // }
-  const { id } = req.params;
+  /* INSERT INTO orders (userid, booksprice, shipfee, totalprice, status, paidmethod)
+VALUES */
+  const { UserID, BooksPrice, ShipFee, TotalPrice, Status, PaidMethod } = req.body;
+  if (!UserID || !BooksPrice || !ShipFee || !TotalPrice || !Status || !PaidMethod) {
+    return res.status(400).json({ success: false, message: 'Please fill all fields' });
+  }
+  try {
+    const newOrder = await sql`
+      INSERT INTO Orders (UserID, BooksPrice, ShipFee, TotalPrice, Status, PaidMethod)
+      VALUES (${UserID}, ${BooksPrice}, ${ShipFee}, ${TotalPrice}, ${Status}, ${PaidMethod})
+    `;
+    res.status(201).json({ success: true, data: newOrder[0] });
+  } catch (err) {
+    console.error('Error creating order:', err);
+    res.status(400).json({ error: err.message });
+  }
 };
 
 export const updateOrder = async (req, res) => {

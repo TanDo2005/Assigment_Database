@@ -16,6 +16,7 @@ export const useBookStore = create((set, get) => ({
   loading: false,
   error: null,
   currentBook: null,
+  user:null,
 
   // form state
   formData: {
@@ -27,6 +28,9 @@ export const useBookStore = create((set, get) => ({
     genre: "",
     image: "",
   },
+
+  setUser: (user)=> set({ user }),
+  
 
   setFormData: (formData) => set({ formData }),
   resetForm: () => set({ formData: { title: "", price: "", stock: "", publishedYear: "", author: "", genre: "", image: "" } }),
@@ -149,4 +153,6 @@ export const useBookStore = create((set, get) => ({
       set({ loading: false });
     }
   },
+
+  
 }));

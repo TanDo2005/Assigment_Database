@@ -1,6 +1,13 @@
 import bcrypt from 'bcryptjs';
 import { sql } from '../config/db.js';
 
+
+export const doingNothing = (req, res) => {
+  res.send('Doing nothing');
+}
+
+
+
 export const register = async (req, res) => {
   // (username, password, dateofbirth, address, phone, email)
 
@@ -30,6 +37,7 @@ export const register = async (req, res) => {
     `;
 
     if (existingUser.length > 0) {
+      console.log('Username already exists:', existingUser[0]);
       return res.status(400).json({ success: false, message: 'Username already exists' });
     }
 

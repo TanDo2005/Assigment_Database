@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLoginStore } from "../store/useLogin";
 import toast from "react-hot-toast";
+import { useBookStore } from "../store/useBookStore";
 
 function LoginPage() {
     const {
@@ -12,6 +13,7 @@ function LoginPage() {
         setFormData,
         login,
     } = useLoginStore();
+    const { setUser } = useBookStore();
 
     const navigate = useNavigate();
 
@@ -43,6 +45,8 @@ function LoginPage() {
                         toast.error("Please fill in all fields.");
                         return;
                     }
+                    setUser(formData.Username);
+                    console.log("User set to:", formData.Username);
                     console.log("Form data:", formData);
                     login(navigate);
                 }}
@@ -101,7 +105,7 @@ function LoginPage() {
             <div className="mt-4 text-center">
                 <p className="text-sm text-gray-500">
                     Don't have an account?{" "}
-                    <a href="/register" className="text-blue-500 hover:underline">
+                    <a href="/api/register" className="text-blue-500 hover:underline">
                         Register here
                     </a>
                 </p>

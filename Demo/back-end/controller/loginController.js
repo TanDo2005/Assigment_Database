@@ -8,8 +8,13 @@ const User = db.User;
 
 import { sql } from '../config/db.js';
 
+export const doingNothing = (req, res) => {
+  res.send('Doing nothing');
+}
+
 export const login = async (req, res) => {
   const { Username, Password } = req.body;
+  console.log("username", Username, "password", Password);
   if (!Username || !Password) {
     return res.status(400).json({ message: 'Please fill all fields' });
   }

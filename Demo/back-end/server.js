@@ -19,6 +19,7 @@ import loginRoutes from "./routes/loginRoutes.js";
 import registerRoutes from './routes/registerRoutes.js';
 
 
+
 import {sql} from "./config/db.js";
 
 // import {aj} from "./lib/arcjet.js";

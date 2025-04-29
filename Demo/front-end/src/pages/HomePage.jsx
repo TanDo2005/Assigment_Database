@@ -5,12 +5,29 @@ import BookCard from "../components/BookCard";
 import AddProductModal from "../components/AddProductModal";
 
 function HomePage() {
-  const { books, loading, error, fetchBooks} = useBookStore();
+  const { books, user, loading, error, fetchBooks} = useBookStore();
 
   useEffect(() => {
     fetchBooks();
   }, [fetchBooks]);
-
+  if(!user) {
+    return (
+      <div className="flex flex-col justify-center items-center h-screen bg-gray-100">
+        <div className="bg-white shadow-lg rounded-lg p-8 text-center">
+          <h2 className="text-2xl font-bold text-red-500 mb-4">Access Denied</h2>
+          <p className="text-gray-600 mb-6">
+            You need to log in to access this page. Please log in to continue.
+          </p>
+          <button
+            className="btn btn-primary px-6 py-2 text-white bg-blue-500 hover:bg-blue-600 rounded-lg shadow-md"
+            onClick={() => window.location.href = "/api/login"}
+          >
+            Go to Login
+          </button>
+        </div>
+      </div>
+    );
+  }
   return (
     <main className="max-w-6xl mx-auto px-4 py-8 ">
       <div className="relative justify-between items-center mb-8">

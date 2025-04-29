@@ -7,6 +7,7 @@ router.get('/', controller.getAllCarts);
 router.get('/:userId', controller.getCartByUserId);
 router.post('/', controller.createOrUpdateCart);
 router.delete('/:userId', controller.deleteCart);
+router.get('/:bookID/:userName', controller.addBook);
 
-// module.exports = router;
+
 export default router;
