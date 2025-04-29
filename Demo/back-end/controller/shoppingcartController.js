@@ -5,6 +5,36 @@ const ShoppingCart = db.ShoppingCart;
 import { sql } from '../config/db.js';
 const router = express.Router();
 
+export const getALlBookInCart = async (req, res) => {
+  const { userName } = req.params;
+  try {
+    // Fetch the user id based on the username
+    const userId = await sql`
+      SELECT "customerid" FROM "User" WHERE "username" = ${userName}`;
+    if (userId.length === 0) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Fetch the cart which contains an array of book IDs
+    const cart = await sql`
+      SELECT "bookid" FROM shoppingcart WHERE "userid" = ${userId[0].customerid}`;
+    if (cart.length === 0) {
+      return res.status(404).json({ message: 'Cart not found' });
+    }
+
+    // Extract the array of book IDs from the returned cart row
+    const bookIds = cart[0].bookid; // bookIds is an array
+
+    // Fetch book details for each ID in the array
+    const bookDetails = await sql`
+      SELECT * FROM books WHERE "id" = ANY(${bookIds})`;
+    
+    res.status(200).json({ success: true, data: bookDetails });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
 export const getAllCarts = async (req, res) => {
   try {
     const carts = await sql`
@@ -32,7 +62,7 @@ export const addBook = async (req, res) => {
     console.log("BOOKID:", bookID);
 
     if (userId.length === 0) {
-      return res.status(404).json({ success:false, message: 'User not found' });
+      return res.status(404).json({ success: false, message: 'User not found' });
 
     }
     // Check if the cart already exists for the user and book
@@ -40,7 +70,7 @@ export const addBook = async (req, res) => {
       SELECT * FROM shoppingcart WHERE "userid" = ${userId[0].customerid} AND ${bookID} = ANY(bookid)`;
     if (booksFound.length > 0) {
       console.log("Book already exists in cart");
-      return res.status(400).json({ success:false, message: 'Book already exists in cart' });
+      return res.status(400).json({ success: false, message: 'Book already exists in cart' });
     }
 
     const cart = await sql`
@@ -48,7 +78,7 @@ export const addBook = async (req, res) => {
     `;
     if (cart.length === 0) {
       console.log("cart not found");
-      return res.status(404).json({success:false, message: 'Cart not found' });
+      return res.status(404).json({ success: false, message: 'Cart not found' });
     }
     // Update the cart with the new book ID
     await sql`

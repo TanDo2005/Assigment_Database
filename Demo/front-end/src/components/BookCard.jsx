@@ -2,12 +2,13 @@ import { Diff, EditIcon, Trash2Icon, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useBookStore } from "../store/useBookStore";
 import { useShoppingCartStore } from "../store/useShoppingCart";
-import {navigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function BookCard({ product }) {
   const { deleteProduct } = useBookStore();
   const { user } = useBookStore();
   const { addBook } = useShoppingCartStore();
+  const navigate = useNavigate();
   return (
     <div className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300">
       <Link to={`/product/${product.id}`}>
@@ -38,21 +39,21 @@ function BookCard({ product }) {
               <Trash2Icon className="size-4" />
             </button>
 
-            <button className="btn btn-sm btn-primary btn-outline"
-
-              onClick={() => {
-                
-                addBook(user, product.id);
-              }}
-            >
-
-              <Diff className="size-4" />
-            </button>
 
 
           </div>
         </div>
       </Link>
+      <button className="btn btn-sm btn-primary btn-outline"
+
+        onClick={() => {
+
+          addBook(user, product.id);
+        }}
+      >
+
+        <Diff className="size-4" />
+      </button>
     </div>
   );
 }

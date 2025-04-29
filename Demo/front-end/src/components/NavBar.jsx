@@ -43,14 +43,14 @@ function Navbar() {
           {/* SEARCH BAR */}
           <div className="relative hidden lg:flex flex-1 max-w-[600px]"  >
             <SearchBar
-              selectedVal = {value}
-              handleChange = {handlechange}
+              selectedVal={value}
+              handleChange={handlechange}
 
-              options = {books}
-              title = "title"
-              id = "id"
+              options={books}
+              title="title"
+              id="id"
             />
-            <SearchButton query = {value}/>
+            <SearchButton query={value} />
           </div>
 
           {/* RIGHT SECTION */}
@@ -58,14 +58,16 @@ function Navbar() {
             <ThemeSelector />
 
             {isHomePage && (
-              <div className="indicator">
-                <div className="p-2 rounded-full hover:bg-base-200 transition-colors">
-                  <ShoppingBagIcon className="size-5" />
-                  <span className="badge badge-sm badge-primary indicator-item">
-                    {0}
-                  </span>
+              <Link to="/api/shoppingcart">
+                <div className="indicator cursor-pointer">
+                  <div className="p-2 rounded-full hover:bg-base-200 transition-colors">
+                    <ShoppingBagIcon className="size-5" />
+                    <span className="badge badge-sm badge-primary indicator-item">
+                      {0}
+                    </span>
+                  </div>
                 </div>
-              </div>
+              </Link>
             )}
           </div>
         </div>

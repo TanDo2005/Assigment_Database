@@ -17,6 +17,7 @@ export const useBookStore = create((set, get) => ({
   error: null,
   currentBook: null,
   user:null,
+  shoppingCart: [],
 
   // form state
   formData: {
@@ -66,6 +67,26 @@ export const useBookStore = create((set, get) => ({
       set({ loading: false });
     }
   },
+  
+  fetchBookShoppingCart: async (userName)=>{
+    set({ loading: true });
+    console.log("fetchBookShoppingCart");
+
+    try{
+      console.log("user:", userName);
+      const response = await axios.get(`${BASE_URL}/api/shoppingcart/forShoppingCart/${userName}/books`);
+      set({ shoppingCart: response.data.data, error: null });
+      console.log("response", response.data);
+    }catch(error) {
+      
+      console.log("Error in fetchBookShoppingCart function", error);
+      set({ error: "Something went wrong" });
+    }finally{
+      
+      set({ loading: false });
+    }
+  },
+
 
   fetchAuthors: async () => {
     set({ loading: true });

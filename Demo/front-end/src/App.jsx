@@ -4,6 +4,7 @@ import HomePage from "./pages/HomePage";
 import BookPage from "./pages/BookPage";
 import LoginPage from "./pages/loginPage"; // Import LoginPage
 import RegisterPage from "./pages/register";
+import ShoppingCartPage from "./pages/shoppingcartPage";
 
 import { Routes, Route } from "react-router-dom";
 import { useThemeStore } from "./store/useThemeStore";
@@ -27,7 +28,8 @@ function App() {
         <Route path="/api/genres/:id" element={<BookPage />} />
         <Route path="/api/login" element={<LoginPage />} />
         <Route path="/api/register" element={<RegisterPage />} />
-
+        <Route path="/api/products" element={<HomePage />} />
+        <Route path="/api/shoppingcart" element={<ShoppingCartPage />} />
       </Routes>
 
       <Toaster />
