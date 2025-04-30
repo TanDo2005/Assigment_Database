@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { Navigate } from "react-router-dom";
 
 // base url will be dynamic depending on the environment
 // const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:3000" : "";
@@ -31,6 +32,13 @@ export const useBookStore = create((set, get) => ({
   },
 
   setUser: (user)=> set({ user }),
+
+  logOut: ()=> {
+
+    set({ user: null });
+    toast.success("Logout successful");
+    Navigate("/api/login");
+  },
   
 
   setFormData: (formData) => set({ formData }),
