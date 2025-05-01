@@ -5,7 +5,7 @@ import { useBookStore } from "../store/useBookStore";
 
 function ShoppingCartPage() {
   const navigate = useNavigate();
-  const { user, fetchBookShoppingCart, shoppingCart, deleteBookFromCart } = useBookStore();
+  const { user, fetchBookShoppingCart, shoppingCart, deleteBookFromCart ,createOrder, setFormShoppingCart  } = useBookStore();
   // Local state to store quantities per book (using book id as key)
   const [quantities, setQuantities] = useState({});
   
@@ -75,6 +75,19 @@ function ShoppingCartPage() {
     console.log("User:", user);
     console.log("Shipment:", shipmentOption);
     console.log("Paid Method:", paidMethod);
+    console.log("totalPrice:", totalPrice);
+    const formShoppingCart = {
+      shoppingCartDetail: shoppingCart,
+      quantities: quantities,
+      shipMent: true,
+      status: "To Pay",
+      PaidMethod: paidMethod,
+      userName: user,
+      totalPriceBooks: totalPrice,
+    }
+    setFormShoppingCart(formShoppingCart);
+    
+    createOrder(formShoppingCart);
     toast.success("Proceeding to checkout");
     setShowCheckoutModal(false);
   };
@@ -148,15 +161,16 @@ function ShoppingCartPage() {
           <div className="bg-white p-6 rounded-lg w-96">
             <h2 className="text-xl font-bold mb-4">Checkout Options</h2>
             <div className="mb-4">
-              <label className="block mb-1 font-medium">Shipment:</label>
-              <select
+              {/* <label className="block mb-1 font-medium">Shipment:</label>
+               */}
+              {/*<select
                 className="input input-bordered w-full"
                 value={shipmentOption ? "true" : "false"}
                 onChange={(e) => setShipmentOption(e.target.value === "true")}
               >
                 <option value="false">No Shipment</option>
                 <option value="true">With Shipment</option>
-              </select>
+              </select>*/}
             </div>
             <div className="mb-4">
               <label className="block mb-1 font-medium">Paid Method:</label>
