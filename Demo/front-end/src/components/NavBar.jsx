@@ -62,9 +62,9 @@ function Navbar() {
                 <div className="indicator cursor-pointer">
                   <div className="p-2 rounded-full hover:bg-base-200 transition-colors">
                     <ShoppingBagIcon className="size-5" />
-                    <span className="badge badge-sm badge-primary indicator-item">
+                    {/* <span className="badge badge-sm badge-primary indicator-item">
                       {0}
-                    </span>
+                    </span> */}
                   </div>
                 </div>
               </Link>

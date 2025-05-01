@@ -144,8 +144,39 @@ export const deleteCart = async (req, res) => {
     const deleted = await ShoppingCart.destroy({ where: { UserID: req.params.userId } });
     deleted ? res.json({ message: 'Cart deleted' }) : res.status(404).json({ message: 'Cart not found' });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({success:false, error: err.message });
   }
 };
+
+export const getBookInCartForDelete = async (req, res) => {
+  const { userName, bookID } = req.params;
+  try {
+    // Fetch the user id based on the username
+    const userId = await sql`
+      SELECT "customerid" FROM "User" WHERE "username" = ${userName}`;
+    if (userId.length === 0) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    console.log("userID", userId[0].customerid);
+    console.log("BOOKID:", bookID);
+    const bookInCart = await sql`
+      SELECT * FROM shoppingcart WHERE "userid" = ${userId[0].customerid} AND ${bookID} = ANY(bookid)`;
+    if (bookInCart.length === 0) {
+      console.log("Book not found in cart");
+      return res.status(404).json({ success: false, message: 'Book not found in cart' });
+    }
+    // Check if the cart already exists for the user and book
+
+    // Update the cart by removing the book ID
+    await sql`
+      UPDATE shoppingcart SET "bookid" = array_remove("bookid", ${bookID}) WHERE "userid" = ${userId[0].customerid}
+    `;
+    
+    res.status(200).json({ success: true, message: 'Book removed from cart' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+
+}
 
 

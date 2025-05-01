@@ -3,6 +3,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { Navigate } from "react-router-dom";
 
+
 // base url will be dynamic depending on the environment
 // const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:3000" : "";
 const BASE_URL = "http://localhost:3000";  
@@ -59,6 +60,24 @@ export const useBookStore = create((set, get) => ({
       console.log("Error in addProduct function", error);
       toast.error("Something went wrong");
     } finally {
+      set({ loading: false });
+    }
+  },
+  
+  deleteBookFromCart: async (userName, bookID) =>{
+    console.log("deleteBookFromCart function called", userName, bookID);
+    set({ loading: true });
+
+    try{  
+      const userID = await axios.get(`${BASE_URL}/api/shoppingcart/forDelete/${userName}/${bookID}`);
+      console.log("userID", userID.data);
+      toast.success("Book deleted from cart successfully");
+
+    }catch(error){
+      console.log("Error in deleteBookFromCart function", error);
+      toast.error("Something went wrong");
+    }
+    finally{
       set({ loading: false });
     }
   },

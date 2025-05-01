@@ -91,3 +91,103 @@ export const deleteOrder = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const getOrdersByUserName = async (req, res) => {
+  const { username } = req.params;
+  try {
+    const orders = await sql`
+      SELECT * FROM Orders 
+      WHERE UserID IN (SELECT customerid FROM "User" WHERE username = ${username})
+    `;
+    if (orders.length === 0) {
+      return res.status(404).json({ success: false, message: 'No orders found for this user!' });
+    }
+    console.log("orders", orders);
+    res.status(200).json({ success: true, data: orders });
+  } catch (err) {
+    console.error('Error fetching orders by username:', err);
+    res.status(500).json({ error: err.message });
+  }
+
+}
+
+export const createOrderWithDetails = async (req, res) => {
+  
+  const { shoppingCartDetail, quantities, shipMent, status, PaidMethod, totalPriceBooks, username } = req.body;
+  //INSERT INTO orders (userid, booksprice, shipfee, totalprice, status, paidmethod)
+
+  //INSERT INTO orderdetail (orderid, bookid, userid, quantity, price, shipmentid)
+
+  try {
+
+    const userID = await sql`
+  SELECT "customerid" FROM "User" WHERE "username" = ${username};
+`;
+
+    if (userID.length === 0) {
+      return res.status(404).json({ success: false, message: 'User not found!' });
+    }
+  } catch (err) {
+    console.error('Error fetching user ID:', err);
+    return res.status(500).json({ error: err.message });
+  }
+
+  const userID = await sql`
+  SELECT "customerid" FROM "User" WHERE "username" = ${username};`
+
+  const toDay = new Date().toISOString().split('T')[0];
+
+  console.log("shoppingCartDetail", shoppingCartDetail);
+  console.log("quantities", quantities);
+  console.log("shipMent", shipMent);
+  console.log("status", status);
+  console.log("PaidMethod", PaidMethod);
+  console.log("bookDetails", bookDetails);
+  if (!shoppingCartDetail || !quantities || shipMent === null || !status || !PaidMethod || !bookDetails) {
+    return res.status(400).json({ success: false, message: 'Please fill all fields' });
+  }
+
+  //shopingcartdetail = array of books details
+  //quantities = array of quantities-> id : quantity
+  //shipMent = boolean
+  //status = string
+  //PaidMethod = string
+
+  const totalOverallPrice = totalPriceBooks + shipMent ? 5000 : 0;
+
+  try {
+    const order = await sql`
+    INSERT INTO orders (userid, booksprice, shipfee, totalprice, status, paidmethod)
+    VALUES (${userID[0].customerid}, ${totalPriceBooks}, ${shipMent ? 5000 : 0}, ${totalOverallPrice}, ${status}, ${PaidMethod})
+    `;
+
+    for (let i = 0; i < shoppingCartDetail.length; i++) {
+      const bookID = shoppingCartDetail[i].bookid;
+      const quantity = quantities[bookID];
+      const price = shoppingCartDetail[i].price;
+      const shipmentID = shipMent ? 1 : null; // Assuming shipment ID is 1 if shipped, null otherwise
+
+      await sql`
+        INSERT INTO orderdetail (orderid, bookid, userid, quantity, price, shipmentid)
+        VALUES (${order[0].orderid}, ${bookID}, ${userID[0].customerid}, ${quantity}, ${price}, ${shipmentID})
+      `;
+
+    }
+
+    //change array bookid to []
+
+    const backtoNormal = await sql`
+   UPDATE shoppingcart SET bookid = ARRAY[]::integer[] 
+    WHERE "userid" = ${userID[0].customerid}
+    `;
+
+    console.log("order", order);
+    const orderID = order[0].orderid;
+    console.log("orderID", orderID);
+
+
+  } catch (err) {
+    console.error('Error creating order:', err);
+    return res.status(400).json({ error: err.message });
+  }
+}

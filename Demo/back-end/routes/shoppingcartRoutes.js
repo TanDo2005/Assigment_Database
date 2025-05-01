@@ -9,6 +9,7 @@ router.post('/', controller.createOrUpdateCart);
 router.delete('/:userId', controller.deleteCart);
 router.get('/:bookID/:userName', controller.addBook);
 router.get('/forShoppingCart/:userName/books', controller.getALlBookInCart);
+router.get('/forDelete/:userName/:bookID', controller.getBookInCartForDelete);
 
 
 
