@@ -2,33 +2,140 @@
 import * as db from '../models/index.js';
 import express from 'express';
 const ShoppingCart = db.ShoppingCart;
+import { sql } from '../config/db.js';
 const router = express.Router();
 
-export const getAllCarts = async (req, res) => {
+export const getALlBookInCart = async (req, res) => {
+  const { userName } = req.params;
   try {
-    const carts = await ShoppingCart.findAll();
-    res.json(carts);
+    // Fetch the user id based on the username
+    const userId = await sql`
+      SELECT "customerid" FROM "User" WHERE "username" = ${userName}`;
+    if (userId.length === 0) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Fetch the cart which contains an array of book IDs
+    const cart = await sql`
+      SELECT "bookid" FROM shoppingcart WHERE "userid" = ${userId[0].customerid}`;
+    if (cart.length === 0) {
+      return res.status(404).json({ message: 'Cart not found' });
+    }
+
+    // Extract the array of book IDs from the returned cart row
+    const bookIds = cart[0].bookid; // bookIds is an array
+
+    // Fetch book details for each ID in the array
+    const bookDetails = await sql`
+      SELECT * FROM books WHERE "id" = ANY(${bookIds})`;
+    
+    res.status(200).json({ success: true, data: bookDetails });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 };
 
-export const getCartByUserId = async (req, res) => {
+export const getAllCarts = async (req, res) => {
   try {
-    const cart = await ShoppingCart.findOne({ where: { UserID: req.params.userId } });
-    cart ? res.json(cart) : res.status(404).json({ message: 'Cart not found' });
+    const carts = await sql`
+      SELECT * FROM shoppingcart
+      JOIN "User" ON shoppingcart."userid" = "User"."customerid"
+      ORDER BY UserID ASC
+    `;
+
+    res.status(200).json({ success: true, data: carts });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+export const addBook = async (req, res) => {
+  //UPATE shoppingcart SET bookid = array_append(bookid, :new_book_id) WHERE userid = :user_idD
+  const { bookID, userName } = req.params;
+
+  try {
+    console.log("UserName", userName);
+    const userId = await sql`
+      SELECT "customerid" FROM "User" WHERE "username" = ${userName}`
+
+    console.log("userID", userId[0].customerid);
+    console.log("BOOKID:", bookID);
+
+    if (userId.length === 0) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+
+    }
+    // Check if the cart already exists for the user and book
+    const booksFound = await sql`
+      SELECT * FROM shoppingcart WHERE "userid" = ${userId[0].customerid} AND ${bookID} = ANY(bookid)`;
+    if (booksFound.length > 0) {
+      console.log("Book already exists in cart");
+      return res.status(400).json({ success: false, message: 'Book already exists in cart' });
+    }
+
+    const cart = await sql`
+      SELECT * FROM shoppingcart WHERE "userid" = ${userId[0].customerid}
+    `;
+    if (cart.length === 0) {
+      console.log("cart not found");
+      return res.status(404).json({ success: false, message: 'Cart not found' });
+    }
+    // Update the cart with the new book ID
+    await sql`
+      UPDATE shoppingcart SET "bookid" = array_append("bookid", ${bookID}) WHERE "userid" = ${userId[0].customerid}
+    `;
+    res.status(200).json({ success: true, message: 'Book added to cart' });
+  } catch (err) {
+    console.log("Error adding book to cart", err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+}
+
+export const getCartByUserId = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const cart = await sql` 
+    SELECT * FROM shoppingcart
+    JOIN "User" ON shoppingcart."userid" = "User"."customerid"
+    WHERE shoppingcart."userid" = ${userId}
+    `;
+
+    if (cart.length === 0) {
+      return res.status(404).json({ message: 'Cart not found' });
+    }
+
+    res.status(200).json({ success: true, data: cart });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
   }
 };
 
 export const createOrUpdateCart = async (req, res) => {
   const { UserID, BookID, Price } = req.body;
   try {
-    const [cart, created] = await ShoppingCart.upsert({ UserID, BookID, Price });
-    res.status(201).json({ message: created ? 'Cart created' : 'Cart updated', cart });
+    if (!UserID || !BookID || !Price) {
+      return res.status(400).json({ message: 'Please fill all fields' });
+    }
+    // Check if the cart already exists for the user
+    const existingCart = await sql`
+      SELECT * FROM shoppingcart WHERE "userid" = ${UserID} 
+    `;
+    if (existingCart.length > 0) {
+      // Update the existing cart
+      await sql`
+        UPDATE shoppingcart SET "bookid" = ${BookID}, "price" = ${Price} WHERE "userid" = ${UserID}
+      `;
+      return res.status(200).json({ success: true, message: 'Cart updated successfully' });
+    }
+
+    // Create a new cart if it doesn't exist
+    await sql`
+      INSERT INTO shoppingcart ("userid", "bookid", "price") VALUES (${UserID}, ${BookID}, ${Price})
+    `;
+    res.status(201).json({ success: true, message: 'Cart created successfully' });
+
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ success: true, error: err.message });
   }
 };
 
@@ -37,6 +144,39 @@ export const deleteCart = async (req, res) => {
     const deleted = await ShoppingCart.destroy({ where: { UserID: req.params.userId } });
     deleted ? res.json({ message: 'Cart deleted' }) : res.status(404).json({ message: 'Cart not found' });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({success:false, error: err.message });
   }
 };
+
+export const getBookInCartForDelete = async (req, res) => {
+  const { userName, bookID } = req.params;
+  try {
+    // Fetch the user id based on the username
+    const userId = await sql`
+      SELECT "customerid" FROM "User" WHERE "username" = ${userName}`;
+    if (userId.length === 0) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    console.log("userID", userId[0].customerid);
+    console.log("BOOKID:", bookID);
+    const bookInCart = await sql`
+      SELECT * FROM shoppingcart WHERE "userid" = ${userId[0].customerid} AND ${bookID} = ANY(bookid)`;
+    if (bookInCart.length === 0) {
+      console.log("Book not found in cart");
+      return res.status(404).json({ success: false, message: 'Book not found in cart' });
+    }
+    // Check if the cart already exists for the user and book
+
+    // Update the cart by removing the book ID
+    await sql`
+      UPDATE shoppingcart SET "bookid" = array_remove("bookid", ${bookID}) WHERE "userid" = ${userId[0].customerid}
+    `;
+    
+    res.status(200).json({ success: true, message: 'Book removed from cart' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+
+}
+
+

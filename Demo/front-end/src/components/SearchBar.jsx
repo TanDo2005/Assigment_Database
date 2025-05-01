@@ -1,18 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { useThemeStore } from "../store/useThemeStore";
 import { useBookStore } from "../store/useBookStore";
+import { useSearchFieldStore } from "../store/useSearchFieldStore";
 
 const SearchBar = ({ options, title, id, selectedVal, handleChange }) => {
   const [query, setQuery] = useState("");
-  const [searchField, setSearchField] = useState("title");
   const inputRef = useRef(null);
   const { theme } = useThemeStore();
-  const { books, authors, genres, fetchAuthors, fetchGenres } = useBookStore();
+  const { books, authors, genres, years, fetchAuthors, fetchGenres, fetchYears } = useBookStore();
+  const { searchField, setSearchField } = useSearchFieldStore();
 
   useEffect(() => {
-    fetchAuthors();
-    fetchGenres();
-  }, [fetchAuthors, fetchGenres]);
+    if (fetchAuthors) fetchAuthors();
+    if (fetchGenres) fetchGenres();
+    if (fetchYears) fetchYears();
+  }, [fetchAuthors, fetchGenres, fetchYears]);
 
   const getDisplayValue = () => {
     if (query != null) return query;
@@ -22,39 +24,46 @@ const SearchBar = ({ options, title, id, selectedVal, handleChange }) => {
 
   const selectOption = (item) => {
     if (searchField === "author") {
-      setQuery(item.name);
-      handleChange(item.authorid);
+      setQuery(item?.name || "");
+      handleChange(item?.authorid);
     } else if (searchField === "genre") {
-      setQuery(item.name);
-      handleChange(item.genreid);
-    } else {
+      setQuery(item?.name || "");
+      handleChange(item?.genreid);
+    } else if (searchField === "year") {
       setQuery(item);
       handleChange(item);
+    } else {
+      setQuery(item[title]);
+      handleChange(item.id);
     }
   };
 
   const filter = (query) => {
-    if (query === "") return [];
-    if (searchField === "author") {
+    if (!query) return [];
+
+    if (searchField === "author" && Array.isArray(authors)) {
       return authors.filter((author) =>
-        author.name.toLowerCase().includes(query.toLowerCase())
+        author?.name?.toLowerCase().includes(query.toLowerCase())
       );
     }
-    if (searchField === "genre") {
+
+    if (searchField === "genre" && Array.isArray(genres)) {
       return genres.filter((genre) =>
-        genre.name.toLowerCase().includes(query.toLowerCase())
+        genre?.name?.toLowerCase().includes(query.toLowerCase())
       );
     }
-    if (searchField === "year") {
-      const years = books
+
+    if (searchField === "year" && Array.isArray(years)) {
+        const years = books
         .map((book) => String(book.publishedyear))
         .filter((year, index, self) =>
           year.includes(query) && self.indexOf(year) === index
-        );
+        ).sort((a, b) => b - a);
       return years;
     }
-    return options.filter((option) =>
-      option[searchField]?.toLowerCase().includes(query.toLowerCase())
+
+    return books.filter((book) =>
+      book[title]?.toLowerCase().includes(String(query).toLowerCase())
     );
   };
 
@@ -85,7 +94,7 @@ const SearchBar = ({ options, title, id, selectedVal, handleChange }) => {
             handleChange(null);
           }}
         />
-        {filteredOptions.length > 0 && (
+        {Array.isArray(filteredOptions) && filteredOptions.length > 0 ? (
           <div className="absolute z-10 mt-2 w-full border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto bg-base-100">
             {filteredOptions.map((option, index) => (
               <div
@@ -93,12 +102,16 @@ const SearchBar = ({ options, title, id, selectedVal, handleChange }) => {
                 onClick={() => selectOption(option)}
                 className="px-4 py-2 cursor-pointer hover:bg-blue-100 transition-colors duration-150"
               >
-                {searchField === "author" || searchField === "genre"
-                  ? option.name
-                  : option}
+                {searchField === "author" || searchField === "genre" ? option?.name : searchField === "year" ? option : option.title}  
               </div>
             ))}
           </div>
+        ) : (
+          query && (
+            <div className="absolute z-10 mt-2 w-full border border-gray-200 rounded-xl shadow-md p-3 bg-base-100 text-gray-500">
+              No results found.
+            </div>
+          )
         )}
       </div>
     </div>

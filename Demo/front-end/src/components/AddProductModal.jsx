@@ -1,5 +1,6 @@
 import { DollarSignIcon, ImageIcon, Package2Icon, PlusCircleIcon, BookType, LibraryBig, CalendarDays, PenTool } from "lucide-react";
 import { useBookStore } from "../store/useBookStore";
+import {  useShoppingCartStore } from "../store/useShoppingCart";
 
 function AddProductModal() {
   const { addProduct, formData, setFormData, loading, resetForm } = useBookStore();

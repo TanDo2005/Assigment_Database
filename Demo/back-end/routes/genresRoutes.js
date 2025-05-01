@@ -7,10 +7,12 @@ import * as genreController from '../controller/genresController.js';
 const router = express.Router();
 
 router.get('/', genreController.getAllGenres);
-router.get('/:id', genreController.getGenreById);
 router.post('/', genreController.createGenre);
+router.get('/:id', genreController.getGenreById);
 router.put('/:id', genreController.updateGenre);
 router.delete('/:id', genreController.deleteGenre);
+router.get('/:id/books', genreController.getBooksByGenreId);
+
 
 // module.exports = router;
 export default router;
