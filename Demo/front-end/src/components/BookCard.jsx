@@ -1,12 +1,13 @@
 import { Diff, EditIcon, Trash2Icon, User } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useBookStore } from "../store/useBookStore";
 import { useShoppingCartStore } from "../store/useShoppingCart";
+import { useBookStore } from "../store/useBookStore";
 import { useNavigate } from "react-router-dom";
+import { useLoginStore } from "../store/useLogin";
 
 function BookCard({ product }) {
   const { deleteProduct } = useBookStore();
-  const { user } = useBookStore();
+  const { user } = useLoginStore();
   const { addBook } = useShoppingCartStore();
   const navigate = useNavigate();
   return (

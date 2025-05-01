@@ -33,6 +33,8 @@ export const getAuthor = async (req, res) => {
 };
 
 export const getBooksByAuthor = async (req, res) => {
+    const {id} = req.params;
+
     try {
         const books = await sql `
             SELECT * FROM Books WHERE authorid = ${id}

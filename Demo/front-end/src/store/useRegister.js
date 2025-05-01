@@ -17,7 +17,10 @@ export const useRegisterStore = create((set, get) =>({
         Phone: "",
         Email: ""
     },
-    setFormData: (formData) => set({ formData }),
+    setFormData: (formData) => {
+        localStorage.setItem("user", formData);
+        set({ formData });
+    },
 
     resetForm: () => set({ formData: { Username: "", Password: "", DateOfBirth: "", Address: "", Phone: "", Email: "" } }),
 

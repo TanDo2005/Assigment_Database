@@ -2,10 +2,13 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useBookStore } from "../store/useBookStore";
+import { useLoginStore } from "../store/useLogin";
 
 function ShoppingCartPage() {
   const navigate = useNavigate();
-  const { user, fetchBookShoppingCart, shoppingCart, deleteBookFromCart } = useBookStore();
+  const { fetchBookShoppingCart, shoppingCart, deleteBookFromCart } = useBookStore();
+  const { user } = useLoginStore();
+
   // Local state to store quantities per book (using book id as key)
   const [quantities, setQuantities] = useState({});
   

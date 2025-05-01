@@ -5,14 +5,18 @@ import toast from "react-hot-toast";
 const BASE_URL = "http://localhost:3000";
 
 export const useLoginStore = create((set, get) => ({
-    user: null,
+    user: localStorage.getItem("user") || null,
     loading: false,
     error: null,
     formData: {
         Username: "",
         Password: "",
     },
-    setFormData: (formData) => set({ formData }),
+    setFormData: (formData) => {
+        localStorage.setItem("user", formData.Username);
+        console.log(formData.Username);
+        set({ formData });
+    },
 
     resetForm: () => set({ formData: { Username: "", Password : "" } }),
 
