@@ -112,19 +112,30 @@ export const getOrdersByUserName = async (req, res) => {
 }
 
 export const createOrderWithDetails = async (req, res) => {
-  
-  const { shoppingCartDetail, quantities, shipMent, status, PaidMethod, totalPriceBooks, username } = req.body;
+
+  const { quantities, shipMent, status, PaidMethod, totalPriceBooks, userName, shoppingCartDetail } = req.body;
+
   //INSERT INTO orders (userid, booksprice, shipfee, totalprice, status, paidmethod)
 
   //INSERT INTO orderdetail (orderid, bookid, userid, quantity, price, shipmentid)
+  console.log("shoppingCart", shoppingCartDetail);
+  console.log("quantities", quantities);
+  console.log("shipMent", shipMent);
+  console.log("status", status);
+  console.log("PaidMethod", PaidMethod);
+  console.log("totalPriceBooks", totalPriceBooks);
+  if (!shoppingCartDetail || !quantities || !status || !PaidMethod || !userName || !totalPriceBooks) {
+    return res.status(400).json({ success: false, message: 'Please fill all fields' });
+  }
 
   try {
 
     const userID = await sql`
-  SELECT "customerid" FROM "User" WHERE "username" = ${username};
+  SELECT "customerid" FROM "User" WHERE "username" = ${userName};
 `;
 
     if (userID.length === 0) {
+      console.error('User not found:', userName);
       return res.status(404).json({ success: false, message: 'User not found!' });
     }
   } catch (err) {
@@ -133,19 +144,8 @@ export const createOrderWithDetails = async (req, res) => {
   }
 
   const userID = await sql`
-  SELECT "customerid" FROM "User" WHERE "username" = ${username};`
+  SELECT "customerid" FROM "User" WHERE "username" = ${userName};`
 
-  const toDay = new Date().toISOString().split('T')[0];
-
-  console.log("shoppingCartDetail", shoppingCartDetail);
-  console.log("quantities", quantities);
-  console.log("shipMent", shipMent);
-  console.log("status", status);
-  console.log("PaidMethod", PaidMethod);
-  console.log("bookDetails", bookDetails);
-  if (!shoppingCartDetail || !quantities || shipMent === null || !status || !PaidMethod || !bookDetails) {
-    return res.status(400).json({ success: false, message: 'Please fill all fields' });
-  }
 
   //shopingcartdetail = array of books details
   //quantities = array of quantities-> id : quantity
@@ -153,19 +153,39 @@ export const createOrderWithDetails = async (req, res) => {
   //status = string
   //PaidMethod = string
 
-  const totalOverallPrice = totalPriceBooks + shipMent ? 5000 : 0;
-
+  // const totalOverallPrice = totalPriceBooks + shipMent ? 5000 : 0;
+  const totalOverallPrice = totalPriceBooks + 5000;
+  
   try {
+    const newShipment = await sql`
+      INSERT INTO shipment (shipmentdate, deliverydate)
+      VALUES (CURRENT_DATE, CURRENT_DATE + INTERVAL '3 days')
+      RETURNING orderid
+    `;
+    console.log("newShipment", newShipment);
     const order = await sql`
     INSERT INTO orders (userid, booksprice, shipfee, totalprice, status, paidmethod)
     VALUES (${userID[0].customerid}, ${totalPriceBooks}, ${shipMent ? 5000 : 0}, ${totalOverallPrice}, ${status}, ${PaidMethod})
+    RETURNING orderid, userid, booksprice, shipfee, totalprice, status, paidmethod
     `;
+    console.log("order", order);
+    
+    /*new_shipment AS (
+  INSERT INTO shipment (shipmentdate, deliverydate)
+  VALUES (CURRENT_DATE, CURRENT_DATE + INTERVAL '3 days')
+  RETURNING orderid
+) */
 
     for (let i = 0; i < shoppingCartDetail.length; i++) {
-      const bookID = shoppingCartDetail[i].bookid;
+      const bookID = shoppingCartDetail[i].id;
       const quantity = quantities[bookID];
       const price = shoppingCartDetail[i].price;
-      const shipmentID = shipMent ? 1 : null; // Assuming shipment ID is 1 if shipped, null otherwise
+      // const shipmentID = shipMent ? 1 : null; // Assuming shipment ID is 1 if shipped, null otherwise
+      const shipmentID = newShipment[0].orderid; // Assuming shipment ID is 1 if shipped, null otherwise
+      console.log("bookID", bookID);
+      console.log("quantity", quantity);
+      console.log("price", price);
+      console.log("shipmentID", shipmentID);
 
       await sql`
         INSERT INTO orderdetail (orderid, bookid, userid, quantity, price, shipmentid)

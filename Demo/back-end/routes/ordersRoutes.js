@@ -9,7 +9,7 @@ router.get('/:id', orderController.getOrderById);
 router.post('/', orderController.createOrder);
 router.put('/:id', orderController.updateOrder);
 router.delete('/:id', orderController.deleteOrder);
-router.post('/user', orderController.getOrdersByUserName);
+router.post('/user', orderController.createOrderWithDetails);
 
 // module.exports = router;
 export default router;
