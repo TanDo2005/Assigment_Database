@@ -1,29 +1,35 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useBookStore } from "../store/useBookStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeftIcon, SaveIcon, Trash2Icon } from "lucide-react";
+import { useLoginStore } from "../store/useLogin";
 
 function BookPage() {
+  const { user } = useLoginStore();
+  const [selectedAuthorId, setSelectedAuthorId] = useState(null);
+  const [selectedGenreId, setSelectedGenreId] = useState(null);
   const {
+    authors,
+    genres,
     currentProduct,
     formData,
     setFormData,
     loading,
     error,
-    fetchProduct,
-    updateProduct,
-    deleteProduct,
+    fetchBook,
+    updateBook,
+    deleteBook,
   } = useBookStore();
   const navigate = useNavigate();
   const { id } = useParams();
 
   useEffect(() => {
-    fetchProduct(id);
-  }, [fetchProduct, id]);
+    fetchBook(id);
+  }, [fetchBook, id]);
 
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this product?")) {
-      await deleteProduct(id);
+      await deleteBook(id);
       navigate("/");
     }
   };
@@ -55,8 +61,8 @@ function BookPage() {
         {/* PRODUCT IMAGE */}
         <div className="rounded-lg overflow-hidden shadow-lg bg-base-100">
           <img
-            src={currentProduct?.image}
-            alt={currentProduct?.name}
+            src={formData?.image}
+            alt={formData?.title}
             className="size-full object-cover"
           />
         </div>
@@ -69,7 +75,7 @@ function BookPage() {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                updateProduct(id);
+                updateBook(id);
               }}
               className="space-y-6"
             >
@@ -82,9 +88,49 @@ function BookPage() {
                   type="text"
                   placeholder="Enter product name"
                   className="input input-bordered w-full"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 />
+              </div>
+
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text text-base font-medium">Book's Author</span>
+                </label>
+                <select
+                  className="select select-bordered w-full py-3"
+                  value={selectedAuthorId || formData.authorid}
+                  onChange={(e) => {
+                    const selectedName = e.target.value;
+                    setSelectedAuthorId(selectedName);
+                    setFormData({ ...formData, authorid: selectedName });
+                  }}
+                >
+                  <option value="" disabled>Select an author</option>
+                  {authors.map((author) => (
+                    <option key={author.authorid} value={author.authorid}>{author.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text text-base font-medium">Genre</span>
+                </label>
+                <select
+                  className="select select-bordered w-full py-3"
+                  value={selectedGenreId || formData.genreid}
+                  onChange={(e) => {
+                    const selectedName = e.target.value;
+                    setSelectedGenreId(selectedName);
+                    setFormData({ ...formData, genreid: selectedName });
+                  }}
+                >
+                  <option value="" disabled>Select a genre</option>
+                  {genres.map((genre) => (
+                    <option key={genre.genreid} value={genre.genreid}>{genre.name}</option>
+                  ))}
+                </select>
               </div>
 
               {/* PRODUCT PRICE */}
@@ -118,27 +164,29 @@ function BookPage() {
               </div>
 
               {/* FORM ACTIONS */}
-              <div className="flex justify-between mt-8">
-                <button type="button" onClick={handleDelete} className="btn btn-error">
-                  <Trash2Icon className="size-4 mr-2" />
-                  Delete Product
-                </button>
+              {(user === "Do Thanh Tan" || user === "Tan Do") && (
+                <div className="flex justify-between mt-8">
+                  <button type="button" onClick={handleDelete} className="btn btn-error">
+                    <Trash2Icon className="size-4 mr-2" />
+                    Delete Product
+                  </button>
 
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={loading || !formData.name || !formData.price || !formData.image}
-                >
-                  {loading ? (
-                    <span className="loading loading-spinner loading-sm" />
-                  ) : (
-                    <>
-                      <SaveIcon className="size-4 mr-2" />
-                      Save Changes
-                    </>
-                  )}
-                </button>
-              </div>
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={loading || !formData.title || !formData.price || !formData.image}
+                  >
+                    {loading ? (
+                      <span className="loading loading-spinner loading-sm" />
+                    ) : (
+                      <>
+                        <SaveIcon className="size-4 mr-2" />
+                        Save Changes
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
             </form>
           </div>
         </div>

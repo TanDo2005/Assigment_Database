@@ -56,7 +56,7 @@ const SearchButton = ({ query }) => {
     let matchedBooks = [];
 
     if (searchField === "title") {
-      matchedBooks = books.filter((b) => b.title.toLowerCase() === query.toLowerCase());
+      matchedBooks = books.filter((b) => b.id === query);
     } else if (searchField === "year") {
       matchedBooks = books.filter((b) => String(b.publishedyear) === query);
     }

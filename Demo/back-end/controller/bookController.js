@@ -150,7 +150,7 @@ export const getBooksByYears = async (req, res) => {
 export const createBook = async (req, res) => {
     const { id, title, price, stock, publishedYear, authorid, genreid } = req.body;
 
-    if (!id || !title || !price || !stock || !publishedYear || !authorid || !genreid) {
+    if (!title || !price || !stock || !publishedYear || !authorid || !genreid) {
         return res.status(400).json({ success: false, message: "Please fill all fields" });
     }
 
@@ -192,13 +192,15 @@ export const getBook = async (req, res) => {
 export const updateBook = async (req, res) => {
     const { id } = req.params;
 
-    const { title, price, stock } = req.body;
+    const { title, price, stock, authorid, genreid } = req.body;
+
+    console.log(id, genreid)
 
     try {
 
         const updatedBook = await sql`
             UPDATE Books
-            SET title = ${title}, price = ${price}, stock = ${stock}
+            SET title = ${title}, price = ${price}, stock = ${stock}, authorid = ${authorid}, genreid = ${genreid}
             WHERE id = ${id}
             RETURNING *
         `;

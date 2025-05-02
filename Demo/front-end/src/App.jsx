@@ -30,7 +30,6 @@ function App() {
         <Route path="/api/genres/:id" element={<GenrePage />} />
         <Route path="/api/login" element={<LoginPage />} />
         <Route path="/api/register" element={<RegisterPage />} />
-        <Route path="/api/products" element={<HomePage />} />
         <Route path="/api/shoppingcart" element={<ShoppingCartPage />} />
       </Routes>
 

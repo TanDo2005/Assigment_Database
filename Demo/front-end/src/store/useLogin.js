@@ -13,8 +13,6 @@ export const useLoginStore = create((set, get) => ({
         Password: "",
     },
     setFormData: (formData) => {
-        localStorage.setItem("user", formData.Username);
-        console.log(formData.Username);
         set({ formData });
     },
 
@@ -25,6 +23,9 @@ export const useLoginStore = create((set, get) => ({
         // e.preventDefault();
         set({loading: true});
         console.log("Form data:", get().formData);
+        const name = get().formData.Username;
+        localStorage.setItem("user", name);
+        console.log(name);
         try{
             const { formData } = get();
             await axios.post(`${BASE_URL}/api/login`, get().formData);

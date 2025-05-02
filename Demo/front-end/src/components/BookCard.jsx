@@ -6,13 +6,13 @@ import { useNavigate } from "react-router-dom";
 import { useLoginStore } from "../store/useLogin";
 
 function BookCard({ product }) {
-  const { deleteProduct } = useBookStore();
+  const { deleteBook } = useBookStore();
   const { user } = useLoginStore();
   const { addBook } = useShoppingCartStore();
   const navigate = useNavigate();
   return (
     <div className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300">
-      <Link to={`/product/${product.id}`}>
+      <Link to={`/api/products/${product.id}`}>
         {/* PRODUCT IMAGE */}
         <figure className="relative pt-[56.25%]">
           <img
@@ -29,26 +29,21 @@ function BookCard({ product }) {
 
           {/* CARD ACTIONS */}
           <div className="card-actions justify-end mt-4">
-            <Link to={`/api/product/${product.id}`} className="btn btn-sm btn-info btn-outline">
+            <Link to={`/api/products/${product.id}`} className="btn btn-sm btn-info btn-outline">
               <EditIcon className="size-4" />
             </Link>
-
-            <button
-              className="btn btn-sm btn-error  btn-outline"
-              onClick={() => deleteProduct(product.id)}
-            >
-              <Trash2Icon className="size-4" />
-            </button>
-
-
-
           </div>
         </div>
       </Link>
+      <button
+        className="btn btn-sm btn-error  btn-outline"
+        onClick={() => deleteBook(product.id)}
+      >
+        <Trash2Icon className="size-4" />
+      </button>
       <button className="btn btn-sm btn-primary btn-outline"
 
         onClick={() => {
-
           addBook(user, product.id);
         }}
       >
