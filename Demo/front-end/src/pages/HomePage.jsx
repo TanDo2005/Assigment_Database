@@ -3,10 +3,11 @@ import { useBookStore } from "../store/useBookStore";
 import { PackageIcon, PlusCircleIcon, RefreshCwIcon } from "lucide-react";
 import BookCard from "../components/BookCard";
 import AddProductModal from "../components/AddProductModal";
+import { useLoginStore } from "../store/useLogin"
 
 function HomePage() {
-  const { books, user, loading, error, fetchBooks} = useBookStore();
-
+  const { books, loading, error, fetchBooks} = useBookStore();
+  const { user } = useLoginStore();
   useEffect(() => {
     fetchBooks();
   }, [fetchBooks]);

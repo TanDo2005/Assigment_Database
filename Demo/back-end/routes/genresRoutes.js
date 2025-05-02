@@ -2,16 +2,16 @@
 // const router = express.Router();
 // const genreController = require('../controllers/genresController.js');
 import express from 'express';
-import * as genreController from '../controller/genresController.js';
+import * as genreController from '../controller/genreController.js';
 
 const router = express.Router();
 
 router.get('/', genreController.getAllGenres);
-router.post('/', genreController.createGenre);
+// router.post('/', genreController.createGenre);
 router.get('/:id', genreController.getGenreById);
 router.put('/:id', genreController.updateGenre);
 router.delete('/:id', genreController.deleteGenre);
-router.get('/:id/books', genreController.getBooksByGenreId);
+router.get('/:id/books', genreController.getBooksByGenre);
 
 
 // module.exports = router;

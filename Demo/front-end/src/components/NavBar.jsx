@@ -5,11 +5,13 @@ import { useBookStore } from "../store/useBookStore";
 import SearchBar from "./SearchBar";
 import SearchButton from "./SearchButton";
 import { useEffect, useState } from "react";
+import { useLoginStore } from "../store/useLogin";
 
 function Navbar() {
   const { pathname } = useResolvedPath();
   const isHomePage = pathname === "/";
   const [value, setValue] = useState("");
+  const { user } = useLoginStore();
 
   const { books, fetchBooks } = useBookStore();
 
@@ -57,7 +59,7 @@ function Navbar() {
           <div className="flex items-center gap-4">
             <ThemeSelector />
 
-            {isHomePage && (
+            {user && (
               <Link to="/api/shoppingcart">
                 <div className="indicator cursor-pointer">
                   <div className="p-2 rounded-full hover:bg-base-200 transition-colors">

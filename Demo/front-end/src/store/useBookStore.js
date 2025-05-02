@@ -141,7 +141,6 @@ export const useBookStore = create((set, get) => ({
     }
   },
 
-
   fetchAuthors: async () => {
     set({ loading: true });
     try {
@@ -155,6 +154,19 @@ export const useBookStore = create((set, get) => ({
     }
   },
 
+  fetchBookbyAuthor: async (id) => {
+    set({ loading: true });
+    try {
+      const response = await axios.get(`${BASE_URL}/api/authors/${id}/books`);
+      set({ books: response.data.data, error: null });
+    } catch (err) {
+      if (err.status == 429) set({ error: "Rate limit exceeded", books: [] });
+      else set({ error: "Something went wrong", books: [] });
+    } finally {
+      set({ loading: false });
+    }
+  },
+
   fetchGenres: async () => {
     set({ loading: true });
     try {
@@ -163,6 +175,19 @@ export const useBookStore = create((set, get) => ({
     } catch (err) {
       if (err.status == 429) set({ error: "Rate limit exceeded", genres: [] });
       else set({ error: "Something went wrong", genres: [] });
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  fetchBookbyGenre: async (id) => {
+    set({ loading: true });
+    try {
+      const response = await axios.get(`${BASE_URL}/api/genres/${id}/books`);
+      set({ books: response.data.data, error: null });
+    } catch (err) {
+      if (err.status == 429) set({ error: "Rate limit exceeded", books: [] });
+      else set({ error: "Something went wrong", books: [] });
     } finally {
       set({ loading: false });
     }
