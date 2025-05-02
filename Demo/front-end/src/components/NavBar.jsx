@@ -1,21 +1,30 @@
-import { Link, useResolvedPath } from "react-router-dom";
-import { ShoppingBagIcon, ShoppingCartIcon, Search } from "lucide-react";
+import { Link, useResolvedPath, useNavigate } from "react-router-dom";
+import { LogOutIcon, ShoppingBagIcon, ShoppingCartIcon } from "lucide-react";
 import ThemeSelector from "./ThemeSelector";
 import { useBookStore } from "../store/useBookStore";
 import SearchBar from "./SearchBar";
 import SearchButton from "./SearchButton";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 function Navbar() {
   const { pathname } = useResolvedPath();
+  const navigate = useNavigate();
   const isHomePage = pathname === "/";
   const [value, setValue] = useState("");
 
   const { books, fetchBooks } = useBookStore();
 
-  const handlechange = (val) => {
+  const handleChange = (val) => {
     setValue(val);
-  }
+  };
+
+  // Log out handler: clear stored token and navigate to login page.
+  const handleLogout = () => {
+    localStorage.removeItem("token");  // Adjust if your token key is different.
+    toast.success("Logged out successfully");
+    navigate("/api/login");
+  };
 
   useEffect(() => {
     fetchBooks();
@@ -41,11 +50,10 @@ function Navbar() {
           </div>
 
           {/* SEARCH BAR */}
-          <div className="relative hidden lg:flex flex-1 max-w-[600px]"  >
+          <div className="relative hidden lg:flex flex-1 max-w-[600px]">
             <SearchBar
               selectedVal={value}
-              handleChange={handlechange}
-
+              handleChange={handleChange}
               options={books}
               title="title"
               id="id"
@@ -62,13 +70,17 @@ function Navbar() {
                 <div className="indicator cursor-pointer">
                   <div className="p-2 rounded-full hover:bg-base-200 transition-colors">
                     <ShoppingBagIcon className="size-5" />
-                    {/* <span className="badge badge-sm badge-primary indicator-item">
-                      {0}
-                    </span> */}
                   </div>
                 </div>
               </Link>
             )}
+
+            <button
+              className="btn btn-outline"
+              onClick={handleLogout}
+            >
+              <LogOutIcon className="size-5" />
+            </button>
           </div>
         </div>
       </div>
