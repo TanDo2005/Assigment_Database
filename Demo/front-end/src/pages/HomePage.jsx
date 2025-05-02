@@ -11,7 +11,7 @@ function HomePage() {
   useEffect(() => {
     fetchBooks();
   }, [fetchBooks]);
-  if(!user) {
+  if(user == null) {
     return (
       <div className="flex flex-col justify-center items-center h-screen bg-gray-100">
         <div className="bg-white shadow-lg rounded-lg p-8 text-center">
