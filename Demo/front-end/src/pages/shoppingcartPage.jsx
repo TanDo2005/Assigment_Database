@@ -6,7 +6,7 @@ import { useLoginStore } from "../store/useLogin";
 
 function ShoppingCartPage() {
   const navigate = useNavigate();
-  const { fetchBookShoppingCart, shoppingCart, deleteBookFromCart } = useBookStore();
+  const { fetchBookShoppingCart, shoppingCart, deleteBookFromCart, createOrder, setFormShoppingCart } = useBookStore();
   const { user } = useLoginStore();
 
   // Local state to store quantities per book (using book id as key)
