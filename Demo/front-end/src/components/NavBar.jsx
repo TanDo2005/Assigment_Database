@@ -7,6 +7,7 @@ import SearchButton from "./SearchButton";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
+
 function Navbar() {
   const { pathname } = useResolvedPath();
   const navigate = useNavigate();
@@ -38,10 +39,16 @@ function Navbar() {
           <div className="flex-1 lg:flex-none">
             <Link to="/" className="hover:opacity-80 transition-opacity">
               <div className="flex items-center gap-2">
-                <ShoppingCartIcon className="size-9 text-primary" />
+                {/* Inline square image next to "BOOKSTORE" text */}
+                <img
+                  src="https://th.bing.com/th/id/OIP.efzZ1mOWZ5hKEMbBXoKPJwHaHf?rs=1&pid=ImgDetMain" 
+                  alt="Square Logo"
+                  className="w-16 h-16 object-cover rounded"
+                  loading="lazy"
+                />
                 <span
                   className="font-semibold font-mono tracking-widest text-2xl 
-                    bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary"
+                      bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary"
                 >
                   BOOKSTORE
                 </span>
@@ -87,4 +94,5 @@ function Navbar() {
     </div>
   );
 }
+
 export default Navbar;

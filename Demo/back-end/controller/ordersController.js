@@ -113,14 +113,14 @@ export const getOrdersByUserName = async (req, res) => {
 
 export const createOrderWithDetails = async (req, res) => {
 
-  const { quantities, shipMent, status, PaidMethod, totalPriceBooks, userName, shoppingCartDetail } = req.body;
+  const { quantities, status, PaidMethod, totalPriceBooks, userName, shoppingCartDetail } = req.body;
 
   //INSERT INTO orders (userid, booksprice, shipfee, totalprice, status, paidmethod)
 
   //INSERT INTO orderdetail (orderid, bookid, userid, quantity, price, shipmentid)
   console.log("shoppingCart", shoppingCartDetail);
   console.log("quantities", quantities);
-  console.log("shipMent", shipMent);
+  // console.log("shipMent", shipMent);
   console.log("status", status);
   console.log("PaidMethod", PaidMethod);
   console.log("totalPriceBooks", totalPriceBooks);
@@ -165,7 +165,7 @@ export const createOrderWithDetails = async (req, res) => {
     console.log("newShipment", newShipment);
     const order = await sql`
     INSERT INTO orders (userid, booksprice, shipfee, totalprice, status, paidmethod)
-    VALUES (${userID[0].customerid}, ${totalPriceBooks}, ${shipMent ? 5000 : 0}, ${totalOverallPrice}, ${status}, ${PaidMethod})
+    VALUES (${userID[0].customerid}, ${totalPriceBooks}, ${ 5000 }, ${totalOverallPrice}, ${status}, ${PaidMethod})
     RETURNING orderid, userid, booksprice, shipfee, totalprice, status, paidmethod
     `;
     console.log("order", order);
