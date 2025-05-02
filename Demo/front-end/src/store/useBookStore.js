@@ -3,12 +3,12 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { Navigate } from "react-router-dom";
 import shoppingcartModel from "../../../back-end/models/shoppingcart.model";
-
+// import { useLoginStore } from "./useLogin";
 
 // base url will be dynamic depending on the environment
 // const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:3000" : "";
 const BASE_URL = "http://localhost:3000";  
-
+// const { user } = useLoginStore();
 
 export const useBookStore = create((set, get) => ({
   // products state

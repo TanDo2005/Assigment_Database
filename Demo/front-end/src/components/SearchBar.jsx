@@ -79,7 +79,6 @@ const SearchBar = ({ options, title, id, selectedVal, handleChange }) => {
         <option value="title">Title</option>
         <option value="author">Author's Name</option>
         <option value="genre">Genre</option>
-        <option value="year">Published Year</option>
       </select>
 
       <div className="relative w-full">

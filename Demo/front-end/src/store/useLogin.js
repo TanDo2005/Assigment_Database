@@ -43,6 +43,7 @@ export const useLoginStore = create((set, get) => ({
     },
 
     logout: () => {
+        localStorage.setItem("user", null)
         set({ user: null });
         toast.success("Logout successful");
     },
