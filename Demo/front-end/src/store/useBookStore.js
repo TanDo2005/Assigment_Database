@@ -2,6 +2,7 @@ import { create } from "zustand";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Navigate } from "react-router-dom";
+import shoppingcartModel from "../../../back-end/models/shoppingcart.model";
 
 
 // base url will be dynamic depending on the environment
@@ -31,6 +32,32 @@ export const useBookStore = create((set, get) => ({
     genre: "",
     image: "",
   },
+
+  formShoppingCart:{
+    shoppingCart: [],
+    quantities: [],
+    shipMent: false,
+    status: "Pending",
+    PaidMethod: "Cash",
+    userName: null,
+    totalPriceBooks: 0,
+  },
+
+  createOrder: async (shoppingcartModel)=>{
+    console.log("createOrder function called", shoppingcartModel);
+    set({ loading: true });
+    try{
+      const response = await axios.post(`${BASE_URL}/api/orders/user`, shoppingcartModel);
+      console.log("response", response.data);
+    }catch(error){
+      console.log("Error in createOrder function", error);
+      toast.error("Something went wrong");
+    }finally{
+      set({ loading: false });
+    }
+  },
+
+  setFormShoppingCart: (formShoppingCart) => set({ formShoppingCart }),
 
   setUser: (user)=> set({ user }),
 
