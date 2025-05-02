@@ -5,7 +5,6 @@ import { useBookStore } from "../store/useBookStore";
 
 function ShoppingCartPage() {
   const navigate = useNavigate();
-  const { user, fetchBookShoppingCart, shoppingCart, deleteBookFromCart } = useBookStore();
   // Local state to store quantities per book (using book id as key)
   const [quantities, setQuantities] = useState({});
   
