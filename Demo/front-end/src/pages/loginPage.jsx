@@ -19,9 +19,9 @@ function LoginPage() {
 
     // Điều hướng đến trang sản phẩm nếu người dùng đã đăng nhập
     useEffect(() => {
-        if (user == null) {
+        if (user === null) {
             console.log("User is defined");
-            navigate("/api/products");
+            navigate("/");
         }
     }, [user, navigate]);
 

@@ -28,8 +28,8 @@ export const useBookStore = create((set, get) => ({
     price: "",
     stock: "",
     publishedYear: "",
-    author: "",
-    genre: "",
+    authorid: "",
+    genreid: "",
     image: "",
   },
 
@@ -73,13 +73,11 @@ export const useBookStore = create((set, get) => ({
   resetForm: () => set({ formData: { title: "", price: "", stock: "", publishedYear: "", author: "", genre: "", image: "" } }),
 
   addBook: async (e) => {
-    e.preventDefault();
     set({ loading: true });
 
     try {
       const { formData } = get();
       await axios.post(`${BASE_URL}/api/products`, formData);
-      await get().fetchProducts();
       get().resetForm();
       toast.success("Book added successfully");
       document.getElementById("add_product_modal").close();
@@ -213,7 +211,6 @@ export const useBookStore = create((set, get) => ({
       await axios.delete(`${BASE_URL}/api/products/${id}`);
       set((prev) => ({ books: prev.books.filter((book) => book.id !== id) }));
       toast.success("Product deleted successfully");      
-      document.getElementById("add_product_modal").close();
     } catch (error) {
       console.log("Error in deleteBook function", error);
       toast.error("Something went wrong");

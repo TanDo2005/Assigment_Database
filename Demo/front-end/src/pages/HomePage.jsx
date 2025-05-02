@@ -6,12 +6,12 @@ import AddProductModal from "../components/AddProductModal";
 import { useLoginStore } from "../store/useLogin"
 
 function HomePage() {
-  const { books, loading, error, fetchBooks} = useBookStore();
+  const { books, loading, error, fetchBooks } = useBookStore();
   const { user } = useLoginStore();
   useEffect(() => {
     fetchBooks();
   }, [fetchBooks]);
-  if(user == null) {
+  if (user === null) {
     return (
       <div className="flex flex-col justify-center items-center h-screen bg-gray-100">
         <div className="bg-white shadow-lg rounded-lg p-8 text-center">
@@ -32,13 +32,15 @@ function HomePage() {
   return (
     <main className="max-w-6xl mx-auto px-4 py-8 ">
       <div className="relative justify-between items-center mb-8">
-        {/* <button
-          className="btn btn-primary"
-          onClick={() => document.getElementById("add_product_modal").showModal()}
-        >
-          <PlusCircleIcon className="size-5 mr-2" />
-          Add Book
-        </button> */}
+        {(user === "Do Thanh Tan" || user === "Tan Do") && (
+          <button
+            className="btn btn-primary"
+            onClick={() => document.getElementById("add_product_modal").showModal()}
+          >
+            <PlusCircleIcon className="size-5 mr-2" />
+            Add Book
+          </button>
+        )}
         <button className="absolute top-0 right-0 btn btn-ghost btn-circle" onClick={fetchBooks}>
           <RefreshCwIcon className="size-5" />
         </button>
@@ -49,7 +51,7 @@ function HomePage() {
       {error && <div className="alert alert-error mb-8">{error}</div>}
 
       {books.length === 0 && !loading && (
-        <div className="flex flex-col justify-center items-center h-96 space-y-4">  
+        <div className="flex flex-col justify-center items-center h-96 space-y-4">
           <div className="bg-base-100 rounded-full p-6">
             <PackageIcon className="size-12" />
           </div>
