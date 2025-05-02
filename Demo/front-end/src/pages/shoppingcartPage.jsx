@@ -8,6 +8,7 @@ function ShoppingCartPage() {
   // Local state to store quantities per book (using book id as key)
   const [quantities, setQuantities] = useState({});
   
+
   // State for checkout modal
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [shipmentOption, setShipmentOption] = useState(false);
